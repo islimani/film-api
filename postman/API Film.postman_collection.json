@@ -1,0 +1,204 @@
+{
+	"info": {
+		"_postman_id": "3dcfc0bd-c959-438c-94af-a5130a38c40b",
+		"name": "API Films",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33873776"
+	},
+	"item": [
+		{
+			"name": "saveFilm",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Vérification de la réponse HTTP\r",
+							"pm.test(\"Statut HTTP est 201 (Créé)\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"// Vérification du type de contenu\r",
+							"pm.test(\"Le type de contenu est JSON\", function () {\r",
+							"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+							"});\r",
+							"\r",
+							"// Vérification de la présence des champs après création\r",
+							"pm.test(\"La réponse après création contient les champs attendus\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('id');\r",
+							"    pm.expect(jsonData).to.have.property('titre');\r",
+							"    pm.expect(jsonData).to.have.property('description');\r",
+							"    pm.expect(jsonData).to.have.property('acteurs');\r",
+							"});\r",
+							"\r",
+							"// Vérification des valeurs des champs après création\r",
+							"pm.test(\"Les valeurs des champs après création sont correctes\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.titre).to.eql(\"Star Wars: The Empire Strikes Back\");\r",
+							"    pm.expect(jsonData.description).to.eql(\"Darth Vader is adamant about turning Luke Skywalker to the dark side.\");\r",
+							"    pm.expect(jsonData.acteurs).to.be.an('array').with.length.above(0);\r",
+							"});\r",
+							"\r",
+							"// Vérification de l'intégrité des données après création\r",
+							"pm.test(\"Les données retournées après création sont intègres\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.be.an('object');\r",
+							"    pm.expect(jsonData.acteurs).to.be.an('array').with.length.above(0);\r",
+							"});\r",
+							"\r",
+							"// Vérification des temps de réponse après création\r",
+							"pm.test(\"Le temps de réponse après création est acceptable\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+							"});\r",
+							"\r",
+							"// Vérification de l'ordre des acteurs après création\r",
+							"pm.test(\"L'ordre des acteurs après création est correct\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    var sorted = jsonData.acteurs.map(a => a.nom).sort();\r",
+							"    pm.expect(jsonData.acteurs.map(a => a.nom)).to.eql(sorted);\r",
+							"});\r",
+							"\r",
+							"// Sauvegarde de l'ID du film pour utilisation ultérieure\r",
+							"var filmId = pm.response.json().id;\r",
+							"pm.environment.set(\"filmId\", filmId);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"titre\": \"Star Wars: The Empire Strikes Back\",\r\n  \"description\": \"Darth Vader is adamant about turning Luke Skywalker to the dark side.\",\r\n  \"acteurs\": [\r\n    {\r\n      \"nom\": \"Ford\",\r\n      \"prenom\": \"Harrison\"\r\n    },\r\n    {\r\n      \"nom\": \"Hamill\",\r\n      \"prenom\": \"Mark \"\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/film",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"film"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getFilmById",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Vérification de la réponse HTTP\r",
+							"pm.test(\"Statut HTTP est 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Vérification du type de contenu\r",
+							"pm.test(\"Le type de contenu est JSON\", function () {\r",
+							"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+							"});\r",
+							"\r",
+							"// Vérification de la présence des champs\r",
+							"pm.test(\"La réponse contient les champs attendus\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('id');\r",
+							"    pm.expect(jsonData).to.have.property('titre');\r",
+							"    pm.expect(jsonData).to.have.property('description');\r",
+							"    pm.expect(jsonData).to.have.property('acteurs');\r",
+							"});\r",
+							"\r",
+							"// Vérification des valeurs des champs\r",
+							"pm.test(\"Les valeurs des champs sont correctes\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.id).to.be.a('number');\r",
+							"    pm.expect(jsonData.titre).to.be.a('string');\r",
+							"    pm.expect(jsonData.description).to.be.a('string');\r",
+							"    pm.expect(jsonData.acteurs).to.be.an('array');\r",
+							"});\r",
+							"\r",
+							"// Vérification de la longueur de la liste des acteurs\r",
+							"pm.test(\"La liste des acteurs contient au moins un élément\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.acteurs.length).to.be.above(0);\r",
+							"});\r",
+							"\r",
+							"// Vérification de l'intégrité des données\r",
+							"pm.test(\"Les données retournées sont intègres\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.acteurs).to.be.an('array').with.length.above(0);\r",
+							"});\r",
+							"\r",
+							"// Vérification des temps de réponse\r",
+							"pm.test(\"Le temps de réponse est acceptable\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+							"});\r",
+							"\r",
+							"// Vérification de l'ordre des acteurs par nom\r",
+							"pm.test(\"Les acteurs sont triés par nom\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    var sorted = jsonData.acteurs.map(a => a.nom).sort();\r",
+							"    pm.expect(jsonData.acteurs.map(a => a.nom)).to.eql(sorted);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/film/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"film",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
