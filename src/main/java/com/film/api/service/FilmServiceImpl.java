@@ -61,7 +61,8 @@ public class FilmServiceImpl implements IFilmService {
             logger.warn(FilmConstants.FILM_TITRE + "{}" + FilmConstants.EXISTE_DEJA, film.getTitre());
             throw new FilmExistantException(film.getTitre());
         }
-        film.getActeurs().forEach(acteur -> acteur.setFilm(film));
+        if (film.getActeurs() != null)
+            film.getActeurs().forEach(acteur -> acteur.setFilm(film));
         var savedFilm = filmRepository.save(film);
         logger.info(FilmConstants.FILM_TITRE + "{}" + FilmConstants.BIEN_ENREGISTRE, savedFilm.getTitre());
         return filmMapper.toDto(savedFilm);
