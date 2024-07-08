@@ -159,8 +159,10 @@ Une collection Postman est fournie pour valider les API du projet. Pour l'utilis
    Nom du Projet
    API de gestion des films
 
+## Améliorations
 
-
-
-
-
+- Ajout Swagger pour la documentation de l'API
+- Ajout des acteurs avant ajout des films
+- @ManyToMany avec Acteur
+- Ajout authentification/autorisation pour la sécurité
+- ...
